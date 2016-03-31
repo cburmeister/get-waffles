@@ -19,7 +19,10 @@ def main():
     Download all Freeleech torrents from waffles.fm with at least 1 leecher.
     """
     # Fetch all currently seeding torrents
-    tc = transmissionrpc.Client(TRANSMISSION_HOST, port=TRANSMISSION_PORT)
+    try:
+        tc = transmissionrpc.Client(TRANSMISSION_HOST, port=TRANSMISSION_PORT)
+    except:
+        return
     torrents = [x.name for x in tc.get_torrents()]
 
     # To prevent download dialog
@@ -51,6 +54,13 @@ def main():
         if idx == 0:
             continue
 
+        try:  # If there is at least 1 leecher
+            leechers = row.find_element_by_css_selector("a[href*='todlers']")
+            if int(leechers.text) < 1:
+                continue
+        except:
+            continue
+
         # Ensure we're not already seeding this torrent
         title = row.find_element_by_css_selector("a[href*='details.php']")
         if title.text in torrents:
@@ -66,7 +76,7 @@ def main():
         with open(path, 'rb') as f:
             data = b64encode(f.read())
 
-        tc.add_torrent(data)  # Add the torrent to Transmission
+        tc.add_torrent(data, timeout=60 * 2)  # Add the torrent to Transmission
         os.remove(path)  # Remove the torrent from the filesystem
 
         time.sleep(3)  # Be nice :D
