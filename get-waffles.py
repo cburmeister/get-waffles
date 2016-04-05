@@ -25,6 +25,8 @@ def main():
         return
     torrents = [x.name for x in tc.get_torrents()]
 
+    print '>>> You are seeding {} torrents...'.format(len(torrents))
+
     # To prevent download dialog
     profile = webdriver.FirefoxProfile()
     profile.set_preference('browser.download.folderList', 2)
@@ -48,6 +50,8 @@ def main():
     # Navigate to Freeleech torrents sorted by number of leechers descending
     driver.get('https://waffles.fm/browse.php?q=is%3Afree&s=leechers&d=desc')
 
+    print '>>> Looking for freeleech torrents with at least 1 leecher...'
+
     # Loop through each result
     table = driver.find_element_by_id('browsetable')
     for idx, row in enumerate(table.find_elements_by_tag_name('tr')):
@@ -65,6 +69,10 @@ def main():
         title = row.find_element_by_css_selector("a[href*='details.php']")
         if title.text in torrents:
             continue
+
+        print '>>> Found {} with at least {} leecher...'.format(
+            title.text, leechers.text
+        )
 
         # Download the torrent
         row.find_element_by_css_selector("a[href*='download.php']").click()
