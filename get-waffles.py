@@ -38,7 +38,7 @@ def main():
 
     # Boot up Firefox & navigate to waffles.fm
     driver = webdriver.Firefox(profile)
-    driver.get('https://waffles.fm/login')
+    driver.get('https://waffles.ch/login')
 
     # Login
     username = driver.find_element_by_id('username')
@@ -48,7 +48,7 @@ def main():
     password.submit()
 
     # Navigate to Freeleech torrents sorted by number of leechers descending
-    driver.get('https://waffles.fm/browse.php?q=is%3Afree&s=leechers&d=desc')
+    driver.get('https://waffles.ch/browse.php?q=is%3Afree&s=leechers&d=desc')
 
     print '>>> Looking for freeleech torrents with at least 1 leecher...'
 
